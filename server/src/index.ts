@@ -1,17 +1,16 @@
-import { MongooseError } from 'mongoose';
-
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+import express, { Express } from 'express';
+import mongoose, { MongooseError } from 'mongoose';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 const port = process.env.PORT || 5000;
+const mongoUrl = process.env.MONGO_URL || '';
 
-const app = express();
+const app: Express = express();
 
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(mongoUrl)
   .then(() => console.log('DBconnection successful'))
   .catch((error: MongooseError) => console.log(error));
 
