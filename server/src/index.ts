@@ -1,6 +1,8 @@
 import express, { Express } from 'express';
 import mongoose, { MongooseError } from 'mongoose';
 import dotenv from 'dotenv';
+import { router as userRoute } from './routes/user';
+import { router as authRoute } from './routes/auth';
 
 dotenv.config();
 
@@ -14,9 +16,9 @@ mongoose
   .then(() => console.log('DBconnection successful'))
   .catch((error: MongooseError) => console.log(error));
 
-app.get('/api/ping', () => {
-  console.log('test request is successful');
-});
+app.use(express.json());
+app.use('/api/users', userRoute);
+app.use('/api/auth/', authRoute);
 
 app.listen(port, () => {
   console.log(`API server is up and running at ${port}`);
