@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { UserModel } from '../models/User';
 import CryptoJS from 'crypto-js';
+import jwt from 'jsonwebtoken';
 
 const router = Router();
 
@@ -45,10 +46,19 @@ router.post('/login', async (req, res) => {
     }
 
     if (storedUser && password === encodedPassword) {
+      const accessToken = jwt.sign(
+        {
+          id: storedUser._id,
+          isAdmin: storedUser.isAdmin,
+        },
+        process.env.JWT_SEC as string,
+        { expiresIn: '3d' },
+      );
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password: storedPassword, ...restUser } = storedUser._doc;
 
-      res.status(200).json(restUser);
+      res.status(200).json({ ...restUser, accessToken });
       return;
     }
 
